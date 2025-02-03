@@ -3,6 +3,7 @@ import uvicorn
 from fastapi import FastAPI, Query, HTTPException,status
 from fastapi.middleware.cors import CORSMiddleware
 from mymath.my_math_lib import is_armstrong, is_perfect, is_perfect, is_prime, get_number_fact
+from fastapi.responses import JSONResponse
 
 
 
@@ -17,13 +18,18 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(ValueError)
+async def value_error_handler(request, exc):
+    return JSONResponse(
+        status_code=400,
+        content={"number": "alphabet", "error": True}
+    )
+
+
 @app.get("/api/classify-number", status_code=status.HTTP_200_OK)
 async def classify_number(number: str = Query(...)):
     if not number.isdigit():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
-            detail={"number": "alphabet", "error": True}
-        )
+        raise ValueError("Invalid number")
     
     number = int(number)
     properties = []
