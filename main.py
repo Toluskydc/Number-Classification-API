@@ -30,10 +30,13 @@ async def classify_number(number: str = Query(...)):
     if is_armstrong(num):
         properties.insert(0, "armstrong")
 
+    prime_status = is_prime(num)
+    perfect_status = is_perfect(num)
+
     return {
         "number": num,
-        "is_prime": False,
-        "is_perfect": False,
+        "is_prime": prime_status,
+        "is_perfect": perfect_status,
         "properties": properties,
         "digit_sum": sum(int(d) for d in str(abs(num))),
         "fun_fact": get_number_fact(num)
